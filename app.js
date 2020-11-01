@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
 const config = require('./config');
+const fs = require("fs");
 
 const { PORT, MONGO_URI, MONGO_DB_NAME } = config;
 
@@ -19,6 +20,21 @@ mongoose
   })
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
+
+fs.access("./uploads", function(error) {
+  if (error) {
+    console.log("Creating uploads directory");
+    fs.mkdir("./uploads", function(err) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log("uploads directory successfully created.")
+      }
+    })
+  } else {
+    console.log("Upload Directory Exists")
+  }
+})
 
 app.use('/api/v1/auth', require('./routes/api/v1/auth'));
 app.use('/api/v1/invoice', require('./routes/api/v1/invoice'));
