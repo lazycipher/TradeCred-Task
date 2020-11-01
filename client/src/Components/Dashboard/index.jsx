@@ -96,7 +96,6 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
     const classes = useStyles();
     const [file, setFile] = useState();
     const [open, setOpen] = useState(true);
-
     const changeFileHandler = (e) => {
         setFile(e.target.files[0])
     };
@@ -121,7 +120,7 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
                     <Button href="/files" variant="outlined">See Files</Button>
                     <input className={classes.fileInput} type="file" name="file" onChange={changeFileHandler}/>
                     {(error.id !== 'FILE_UPLOAD_FAILED') && progress?
-                    <Alert className={classes.alert} variant="outlined" severity="info">Uploading {progress}% <LinearProgress variant="determinate" value={progress} /></Alert>
+                    <Alert className={classes.alert} variant="outlined" severity="info">Uploading {progress}% {uploadDetails && uploadDetails.success?<LinearProgress variant="determinate" progress={progress} />:<LinearProgress />}</Alert>
                     :(error.id==='FILE_UPLOAD_FAILED'?<Alert className={classes.alert} variant="outlined" severity="error">Uploading Failed</Alert>:null)
                     }
                     <Button className={classes.btn} variant="contained" color="primary" onClick={handleFileUpload}>Upload</Button>
