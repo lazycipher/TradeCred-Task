@@ -1,6 +1,7 @@
 const {
     Schema,
-    model
+    model,
+    Types
 } = require('mongoose');
 
 const InvoiceSchema = new Schema({
@@ -34,7 +35,14 @@ const InvoiceSchema = new Schema({
     vendorCode: {
         type: String,
         required: true,
-        ref: 'Vendor'
+    },
+    vendorName: {
+        type: String,
+        required: true,
+    },
+    vendorType: {
+        type: String,
+        required: true,
     },
     createdBy: {
         type: String,

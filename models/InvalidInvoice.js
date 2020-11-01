@@ -28,7 +28,15 @@ const InvalidInvoiceSchema = new Schema({
     },
     vendorCode: {
         type: String,
-        ref: 'Vendor'
+        required: true,
+    },
+    vendorName: {
+        type: String,
+        required: true,
+    },
+    vendorType: {
+        type: String,
+        required: true,
     },
     createdBy: {
         type: String,

@@ -11,6 +11,7 @@ const Invoice = require('../../../models/Invoice');
 const Vendor = require('../../../models/Vendor');
 const InvalidInvoice = require('../../../models/InvalidInvoice');
 const {parseDate} = require('../../../utils/conversion')
+var xlsx = require('node-xlsx');
 
 var Storage = multer.diskStorage({
     destination: function (req, file, next) {
@@ -39,8 +40,9 @@ var upload = multer({
 router.post('/upload', auth, upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
-        let workbook = XLSX.readFile(file.path, {raw: true, dateNF: true, cellDates: true});
-        let data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        let data = xlsx.parse(file.path, {cellDates: true})
+        // let workbook = XLSX.readFile(file.path, {raw: true, dateNF: true, cellDates: true});
+        // let data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
         let dups = 0, invs = 0;
         let flag = Boolean(false)
         for( const d of  data[0].data){
@@ -67,6 +69,8 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
                         pstngDate: d[5],
                         amtInLocCur: d[6],
                         vendorCode: d[7],
+                        vendorName: d[8],
+                        vendorType: d[9],
                         createdBy: req.user.id,
                         insertedByFile: file.originalname
                     })
@@ -89,6 +93,8 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
                         pstngDate: d[5],
                         amtInLocCur: d[6],
                         vendorCode: d[7],
+                        vendorName: d[8],
+                        vendorType: d[9],
                         createdBy: req.user.id,
                         insertedByFile: file.originalname,
                         reason: reason
@@ -160,7 +166,12 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
 
 router.get('/list', auth, async (req, res) => {
     try {
-        const invoices = await Invoice.find().limit(20).populate('Vendor');
+        const limit = req.query.limit? parseInt(req.query.limit):20;
+        const page = req.query.page? parseInt(req.query.page):1;
+        const skip = (page-1)*limit;
+        const invoices = await Invoice.find().sort({ date: -1});
+        // const totalInvoices = await Invoice.find().countDocuments();
+
         res.status(200).json(invoices);
     }catch(e) {
         res.status(400).json({
@@ -202,7 +213,10 @@ router.get('/stats', auth, async (req, res) => {
 
 router.get('/invalidlist', auth, async (req, res) => {
     try {
-        const invoices = await InvalidInvoice.find().limit(20).populate('Vendor');
+        const limit = req.query.limit? parseInt(req.query.limit):20;
+        const page = req.query.page? parseInt(req.query.page):1;
+        const skip = (page-1)*limit;
+        const invoices = await InvalidInvoice.find();
         res.status(200).json(invoices);
     }catch(e) {
         res.status(400).json({
