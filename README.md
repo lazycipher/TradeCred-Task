@@ -1,5 +1,5 @@
 # TradeCred-Task
-
+Deployed: http://tradecredtask.herokuapp.com/ give the dynos some time to boot up before exploring!
 ## Quick Start
 
 Create a `.env` file in project directory and put the following details inside that.
