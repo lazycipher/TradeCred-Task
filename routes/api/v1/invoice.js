@@ -10,6 +10,7 @@ const readXlsxFile = require('read-excel-file/node');
 const xlsx = require('node-xlsx');
 const Invoice = require('../../../models/Invoice');
 const Vendor = require('../../../models/Vendor');
+const InvalidInvoice = require('../../../models/InvalidInvoice');
 
 var Storage = multer.diskStorage({
     destination: function (req, file, next) {
@@ -61,6 +62,29 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
                     const saveInvoice = await newInvoice.save();
                     if (!saveInvoice) throw Error("Something went wrong!");
                 }else {
+                    let reason='';
+
+                    if(d[5]>Date.now()) {
+                        reason = 'futureDated'
+                    } else {
+                        reason = 'duplicate'
+                    }
+                    const newInvalidInvoice = new InvalidInvoice({
+                        invoiceNumber: d[0],
+                        documentNumber: d[1],
+                        type: d[2],
+                        netDueDt: d[3],
+                        docDate: d[4],
+                        pstngDate: d[5],
+                        amtInLocCur: d[6],
+                        vendorCode: d[7],
+                        createdBy: req.user.id,
+                        insertedByFile: file.originalname,
+                        reason: reason
+                    })
+                    const saveInvalidInvoice = await newInvalidInvoice.save();
+                    if (!saveInvalidInvoice) throw Error("Something went wrong!");
+
                     dups++;
                 }
             }
@@ -148,12 +172,13 @@ router.get('/stats', auth, async (req, res) => {
                 }
             }
         ]).exec();
-
+        const invalidCount = await InvalidInvoice.find().countDocuments()
         res.status(200).json({
             invoiceCount,
             filesCount,
             vendorsCount,
-            invoiceAmount: invoiceSum[0].amtInLocCur
+            invoiceAmount: invoiceSum[0].amtInLocCur,
+            invalidCount
         });
     }catch(e) {
         res.status(400).json({

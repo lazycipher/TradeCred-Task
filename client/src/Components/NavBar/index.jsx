@@ -39,9 +39,9 @@ const useStyles = makeStyles((theme) =>
     logo: {
       maxWidth: '20%'
     },
-    avatar: {
-      background: 'white'
-    },
+    // avatar: {
+    //   background: 'white'
+    // },
     logo: {
       color: 'white',
       textDecoration: 'none'
@@ -69,7 +69,7 @@ const AppNavbar = ({ auth }) => {
     <Fragment>
       <span className="navbar-text mr-3">
         <strong>
-          {auth && auth.user ? <Avatar className={classes.avatar} component={ButtonBase} ref={anchorRef} onClick={handleToggle} src={auth.user.avatar_url}></Avatar> : ''}
+          {auth && auth.user ? <Avatar className={classes.avatar} component={ButtonBase} ref={anchorRef} onClick={handleToggle}></Avatar> : ''}
         </strong>
       </span>
       <Popper anchorEl={anchorRef.current} open={open} role={undefined} transition>
@@ -81,7 +81,6 @@ const AppNavbar = ({ auth }) => {
               <Paper>
                 <ClickAwayListener onClickAway={handlePopperClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow">
-                    <MenuItem><Link className={classes.blackLink} to='/profile'>Profile</Link></MenuItem>
                     <Logout handleToggle={handleToggle} />
                   </MenuList>
                 </ClickAwayListener>

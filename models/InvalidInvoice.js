@@ -37,6 +37,10 @@ const InvalidInvoiceSchema = new Schema({
     reason: {
         type: String
     },
+    InsertedByFile: {
+        type: String,
+        ref: 'UploadedFile'
+    },
     createdOn: {
         type: Date,
         default: Date.now()

@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) =>
     },
     amount: {
         backgroundColor: '#00695c'
+    },
+    invalid: {
+        backgroundColor: 'red'
     }
   }),
 );
@@ -62,7 +65,7 @@ const useStyles = makeStyles((theme) =>
                         <List component="nav" aria-label="secondary mailbox folders">
                             <ListItem>
                                 <ListItemAvatar><Avatar className={classes.invoice}><Icon>dehaze</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.invoiceCount )? stats.stats.invoiceCount:null} secondary="Total Invoices"/>
+                                <ListItemText primary={(stats.stats && stats.stats.invoiceCount )? stats.stats.invoiceCount:0} secondary="Total Invoices"/>
                                 <IconButton>
                                     <Icon>open_in_new</Icon>
                                 </IconButton>
@@ -72,7 +75,7 @@ const useStyles = makeStyles((theme) =>
                         <List component="nav" aria-label="secondary mailbox folders">
                             <ListItem>
                                 <ListItemAvatar><Avatar className={classes.vendors}><Icon>topic</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.vendorsCount )? stats.stats.vendorsCount:null} secondary="Total Vendors Registered"/>
+                                <ListItemText primary={(stats.stats && stats.stats.vendorsCount )? stats.stats.vendorsCount:0} secondary="Total Vendors Registered"/>
                                 <IconButton>
                                     <Icon>open_in_new</Icon>
                                 </IconButton>
@@ -82,7 +85,7 @@ const useStyles = makeStyles((theme) =>
                         <List component="nav" aria-label="secondary mailbox folders">
                             <ListItem>
                                 <ListItemAvatar><Avatar className={classes.files}><Icon>storage</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.filesCount )? stats.stats.filesCount:null} secondary="Total Files Uploaded"/>
+                                <ListItemText primary={(stats.stats && stats.stats.filesCount )? stats.stats.filesCount:0} secondary="Total Files Uploaded"/>
                                 <IconButton>
                                     <Icon>open_in_new</Icon>
                                 </IconButton>
@@ -92,7 +95,17 @@ const useStyles = makeStyles((theme) =>
                         <List component="nav" aria-label="secondary mailbox folders">
                             <ListItem>
                                 <ListItemAvatar><Avatar className={classes.amount} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.invoiceAmount )? stats.stats.invoiceAmount:null} secondary="Total Amount in local Currency"/>
+                                <ListItemText primary={(stats.stats && stats.stats.invoiceAmount )? stats.stats.invoiceAmount:0} secondary="Total Amount in local Currency"/>
+                                <IconButton>
+                                    <Icon>open_in_new</Icon>
+                                </IconButton>
+                            </ListItem>
+                        </List>
+                        <Divider />
+                        <List component="nav" aria-label="secondary mailbox folders">
+                            <ListItem>
+                                <ListItemAvatar><Avatar className={classes.invalid} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
+                                <ListItemText primary={(stats.stats && stats.stats.invalidCount )? stats.stats.invalidCount:0} secondary="Total Invalid"/>
                                 <IconButton>
                                     <Icon>open_in_new</Icon>
                                 </IconButton>
