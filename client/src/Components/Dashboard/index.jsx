@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 import { uploadFile } from '../../store/actions/fileActions';
-import { Redirect, Link } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) =>
         margin: '1rem auto'
     },
     btn: {
-        margin: '1rem auto'
+        margin: '1rem'
     },
     alert: {
         width: '50%',
@@ -115,9 +115,9 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
         <Container className={classes.container} maxWidth="md">
             <Grid container justify="center">
                 <Grid className={classes.uploadSection} item xs={12}>
-                    <Button href="/stats" variant="outlined">Check Stats</Button>
-                    { ' ' }
-                    <Button href="/files" variant="outlined">See Files</Button>
+                    <Button className={classes.btn} component={RouterLink} to='/stats' color="primary" variant="outlined">Check Stats</Button>
+                    <Button className={classes.btn} component={RouterLink} to='/files'color="primary" variant="outlined">See Files</Button>
+                    <Button className={classes.btn} component={RouterLink} to='/invoices'color="primary" variant="outlined">Invoices</Button>
                     <input className={classes.fileInput} type="file" name="file" onChange={changeFileHandler}/>
                     {(error.id !== 'FILE_UPLOAD_FAILED') && progress?
                     <Alert className={classes.alert} variant="outlined" severity="info">Uploading {progress}% {uploadDetails && uploadDetails.success?<LinearProgress variant="determinate" progress={progress} />:<LinearProgress />}</Alert>

@@ -10,6 +10,7 @@ import Spinner from '../Spinner';
 import FileList from '../Files/FileList';
 import GuardedRoute from '../../utils/GuardedRoute';
 import Stats from '../Stats';
+import Invoice from '../Invoices/Invoice';
 
 const Home = ({isLoading, isAuthenticated}) => {
   return (
@@ -22,6 +23,7 @@ const Home = ({isLoading, isAuthenticated}) => {
               <GuardedRoute exact path = "/" auth={isAuthenticated} component={Dashboard} />
               <GuardedRoute exact path = "/files" auth={isAuthenticated} component={FileList} />
               <GuardedRoute exact path = "/stats" auth={isAuthenticated} component={Stats} />
+              <GuardedRoute exact path = "/invoices" auth={isAuthenticated} component={Invoice} />
             </Switch>
         </Router> 
         </>

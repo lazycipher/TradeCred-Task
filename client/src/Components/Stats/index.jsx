@@ -11,7 +11,8 @@ import {
   Avatar,
   IconButton,
   Icon,
-  Divider
+  Divider,
+  Button
 } from '@material-ui/core';
 import { 
   createStyles, 
@@ -19,7 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 import { getStats } from '../../store/actions/statsActions';
-
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) =>
         <>
             {stats && stats.isLoaded===true?
                 <Container maxWidth="sm">
+                    <Button component={RouterLink} to='/' color="primary" variant="outlined">Dashboard</Button>
                     <Paper className={classes.paper} elevation={3}>
                         <List component="nav" aria-label="secondary mailbox folders">
                             <ListItem>

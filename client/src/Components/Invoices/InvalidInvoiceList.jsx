@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-    Container,
     TableContainer,
     Table,
     TableHead,
     TableRow,
     TableCell,
-    TablePagination,
     TableBody,
-    Button
 } from '@material-ui/core';
 import {
     createStyles,
     makeStyles,
 } from '@material-ui/core/styles';
-import { getInvoices } from '../../store/actions/invoiceActions';
-import { Link as RouterLink } from 'react-router-dom';
+import { getInvalidInvoices } from '../../store/actions/invoiceActions';
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -31,6 +27,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const columns = [
+    { id: 'reason', label: 'Reason', minWidth: 50 },
     { id: 'invoiceNumber', label: 'Invoice Numbers', minWidth: 50 },
     { id: 'documentNumber', label: 'Document Number', minWidth: 50 },
     {
@@ -86,25 +83,14 @@ const columns = [
     },
 ];
 
-const InvoiceList = ({ invoices, getInvoices }) => {
+const InvalidInvoiceList = ({ invoices, getInvalidInvoices }) => {
     const classes = useStyles();
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        getInvoices();
+        getInvalidInvoices();
     }, [])
 
-    const handleChangePage = (event, newPage) => {
-        getInvoices(page+1,rowsPerPage);
-        setPage(newPage+1);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-    return (
+    return (  
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -142,11 +128,9 @@ const InvoiceList = ({ invoices, getInvoices }) => {
 };
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return ({
-        invoices: state.invoice.valid.invoices,
-        total: state.invoice.valid.total
+        invoices: state.invoice.invalid.invoices,
     })
 };
 
-export default connect(mapStateToProps, { getInvoices })(InvoiceList);
+export default connect(mapStateToProps, { getInvalidInvoices })(InvalidInvoiceList);

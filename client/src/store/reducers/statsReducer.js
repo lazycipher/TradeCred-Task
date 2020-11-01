@@ -10,7 +10,6 @@ import {
   };
   
   export default function statsReducer(state = initialState, action) {
-    console.log("action.payload: ", action.payload);
     switch (action.type) {
         case FETCH_STATS_SUCCESS:
             return {
@@ -21,7 +20,6 @@ import {
         case FETCH_STATS_FAILED:
             return {
                 ...state,
-                stats: {},
                 isLoaded: false
             };
         case FETCH_STATS_LOADING:
