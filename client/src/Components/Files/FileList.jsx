@@ -12,6 +12,7 @@ import {
   IconButton,
   Icon,
   Divider,
+  Button
 } from '@material-ui/core';
 import { 
   createStyles, 
@@ -19,6 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import { getFiles } from '../../store/actions/fileActions';
 import formatRelative from 'date-fns/formatRelative'
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -56,6 +58,7 @@ const useStyles = makeStyles((theme) =>
 
     return (
         <Container maxWidth="md">
+            <Button component={RouterLink} to='/' color="primary" variant="outlined">Dashboard</Button>
             <Paper className={classes.paper} elevation={3}>
             {files && files.map(file=>(
                 <Grid key={file._id} item xs={12}>
