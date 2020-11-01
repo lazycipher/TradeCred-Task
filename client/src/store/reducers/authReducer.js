@@ -33,6 +33,7 @@ const initialState = {
       case LOGIN_SUCCESS:
       case REGISTER_SUCCESS:
         localStorage.setItem('token', action.payload.token);
+        window.location.reload(false);
         return {
           ...state,
           ...action.payload,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux';
 import {
   Container,
@@ -11,10 +11,6 @@ import {
   Avatar,
   IconButton,
   Icon,
-  Popover,
-  Switch,
-  Button,
-  LinearProgress,
   Divider
 } from '@material-ui/core';
 import { 

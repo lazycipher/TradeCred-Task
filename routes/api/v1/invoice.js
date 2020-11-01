@@ -22,7 +22,17 @@ var Storage = multer.diskStorage({
 });
 
 var upload = multer({
-    storage: Storage
+    storage: Storage,
+    onFileUploadStart: function(file) {
+        console.log("Inside uploads");
+        if (file.mimetype == 'application/vnd.ms-excel' || file.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 });
 
 
