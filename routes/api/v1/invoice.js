@@ -6,11 +6,11 @@ const User = require('../../../models/User');
 const UploadedFile = require('../../../models/UploadedFile');
 const router = Router();
 const multer = require('multer');
-const readXlsxFile = require('read-excel-file/node');
-const xlsx = require('node-xlsx');
+const XLSX = require('xlsx')
 const Invoice = require('../../../models/Invoice');
 const Vendor = require('../../../models/Vendor');
 const InvalidInvoice = require('../../../models/InvalidInvoice');
+const {parseDate} = require('../../../utils/conversion')
 
 var Storage = multer.diskStorage({
     destination: function (req, file, next) {
@@ -39,7 +39,8 @@ var upload = multer({
 router.post('/upload', auth, upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
-        const data = xlsx.parse(file.path)
+        let workbook = XLSX.readFile(file.path, {raw: true, dateNF: true, cellDates: true});
+        let data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
         let dups = 0, invs = 0;
         let flag = Boolean(false)
         for( const d of  data[0].data){
@@ -74,7 +75,7 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
                 }else {
                     let reason='';
 
-                    if(d[5]>Date.now()) {
+                    if(d[5]>Date.now()){
                         reason = 'futureDated'
                     } else {
                         reason = 'duplicate'
@@ -197,5 +198,19 @@ router.get('/stats', auth, async (req, res) => {
         });
     }
 })
+
+
+router.get('/invalidlist', auth, async (req, res) => {
+    try {
+        const invoices = await InvalidInvoice.find().limit(20).populate('Vendor');
+        res.status(200).json(invoices);
+    }catch(e) {
+        res.status(400).json({
+            msg: e.message,
+            success: false
+        });
+    }
+})
+
 
 module.exports = router;
