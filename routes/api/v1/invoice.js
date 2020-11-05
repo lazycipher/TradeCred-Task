@@ -21,24 +21,28 @@ var Storage = multer.diskStorage({
         next(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
     }
 });
-
+ 
 var upload = multer({
     storage: Storage,
-    onFileUploadStart: function(file) {
-        console.log("Inside uploads");
-        if (file.mimetype == 'application/vnd.ms-excel' || file.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            return true;
+    fileFilter: (req, file, cb) => {
+        try {
+            if (file.mimetype == "application/vnd.ms-excel" || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+            cb(null, true);
+          } else {
+            throw Error('Only ms-excel files allowed!');
+          }
+        } catch(err) {
+            cb(null, false)
         }
-        else
-        {
-            return false;
-        }
-    }
+      }
 });
 
 
 router.post('/upload', auth, upload.single('file'), async (req, res) => {
     try {
+        if(req.file===undefined) {
+            throw Error("Wrong File Type")
+        }
         const file = req.file;
         let data = xlsx.parse(file.path, {cellDates: true})
         // let workbook = XLSX.readFile(file.path, {raw: true, dateNF: true, cellDates: true});
@@ -78,8 +82,10 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
                     if (!saveInvoice) throw Error("Something went wrong!");
                 }else {
                     let reason='';
-
-                    if(d[5]>Date.now()){
+                    let currentDate = new Date()
+                    console.log("currentDate?: ", currentDate)
+                    console.log("new Date(): ", new Date())
+                    if(d[5]>currentDate){
                         reason = 'futureDated'
                     } else {
                         reason = 'duplicate'

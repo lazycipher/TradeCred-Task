@@ -23,7 +23,7 @@ import {
 import { Alert } from '@material-ui/lab';
 import { uploadFile } from '../../store/actions/fileActions';
 import { Link as RouterLink } from 'react-router-dom';
-
+import { clearErrors } from '../../store/actions/errorActions';
 const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
@@ -96,19 +96,35 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
     const classes = useStyles();
     const [file, setFile] = useState();
     const [open, setOpen] = useState(true);
+    const [err, setErr] = useState(false);
+
     const changeFileHandler = (e) => {
-        setFile(e.target.files[0])
+        clearErrors();
+        setFile(e.target.files[0]);
+        clearErrors();
+        setErr(false)
     };
 
     const handleFileUpload = () => {
-        uploadFile(file);
+        if(file && file.type) {
+            uploadFile(file);
+        } else {
+            setErr(true);
+            return 0;
+        }
+        
+    };
+    const handleErrClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErr(false);
     };
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpen(false);
     };
     return(
@@ -124,7 +140,7 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
                     :(error.id==='FILE_UPLOAD_FAILED'?<Alert className={classes.alert} variant="outlined" severity="error">Uploading Failed</Alert>:null)
                     }
                     <Button className={classes.btn} variant="contained" color="primary" onClick={handleFileUpload}>Upload</Button>
-                    <Snackbar open={uploadDetails.success && open} autoHideDuration={6000} onClose={handleClose}>
+                    <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={uploadDetails.success && open} autoHideDuration={3000} onClose={handleClose}>
                         <Alert onClose={handleClose} variant="filled" severity="success">
                             File Upload Successful
                         </Alert>
@@ -212,6 +228,11 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
                         </Paper>
                     </Grid>
                 :null}
+                <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={err} autoHideDuration={3000} onClose={handleErrClose}>
+                    <Alert onClose={handleErrClose} variant="filled" severity="warning">
+                        Please select a file first!
+                    </Alert>
+                </Snackbar>
             </Grid>
         </Container>
     );
