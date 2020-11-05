@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
     Container,
@@ -91,23 +91,25 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadDetails }) => {
+const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadDetails, clearErrors }) => {
 
     const classes = useStyles();
     const [file, setFile] = useState();
     const [open, setOpen] = useState(true);
     const [err, setErr] = useState(false);
-
+    const [showProgress, setShowProgress] = useState(false);
     const changeFileHandler = (e) => {
         clearErrors();
         setFile(e.target.files[0]);
         clearErrors();
         setErr(false)
+        setShowProgress(false)
     };
 
     const handleFileUpload = () => {
         if(file && file.type) {
             uploadFile(file);
+            setShowProgress(true)
         } else {
             setErr(true);
             return 0;
@@ -127,6 +129,14 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
         }
         setOpen(false);
     };
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        clearErrors();
+        setShowProgress(false);
+      }
+
     return(
         <Container className={classes.container} maxWidth="md">
             <Grid container justify="center">
@@ -135,9 +145,9 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
                     <Button className={classes.btn} component={RouterLink} to='/files'color="primary" variant="outlined">See Files</Button>
                     <Button className={classes.btn} component={RouterLink} to='/invoices'color="primary" variant="outlined">Invoices</Button>
                     <input className={classes.fileInput} type="file" name="file" onChange={changeFileHandler}/>
-                    {(error.id !== 'FILE_UPLOAD_FAILED') && progress?
+                    {showProgress?((error.id !== 'FILE_UPLOAD_FAILED') && progress?
                     <Alert className={classes.alert} variant="outlined" severity="info">Uploading {progress}% {uploadDetails && uploadDetails.success?<LinearProgress variant="determinate" progress={progress} />:<LinearProgress />}</Alert>
-                    :(error.id==='FILE_UPLOAD_FAILED'?<Alert className={classes.alert} variant="outlined" severity="error">Uploading Failed</Alert>:null)
+                    :(error.id==='FILE_UPLOAD_FAILED'?<Alert className={classes.alert} variant="outlined" severity="error">Uploading Failed</Alert>:null)):null
                     }
                     <Button className={classes.btn} variant="contained" color="primary" onClick={handleFileUpload}>Upload</Button>
                     <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={uploadDetails.success && open} autoHideDuration={3000} onClose={handleClose}>
@@ -233,6 +243,19 @@ const Dashboard = ({ auth, isAuthenticated, progress, uploadFile, error, uploadD
                         Please select a file first!
                     </Alert>
                 </Snackbar>
+                {error.id!==null?
+                    <Snackbar 
+                        open={error.id!==null} 
+                        autoHideDuration={5000} 
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }} 
+                        onClose={handleCloseError}
+                    >
+                        <Alert onClose={handleCloseError} severity="error" variant="filled">
+                        {error.msg && error.msg.msg?error.msg.msg:null}
+                        </Alert>
+                    </Snackbar>
+                    :null
+                }
             </Grid>
         </Container>
     );
@@ -249,4 +272,4 @@ const mapStateToProps = (state) => {
       })
 };
 
-export default connect(mapStateToProps, {uploadFile})(Dashboard);
+export default connect(mapStateToProps, {uploadFile, clearErrors})(Dashboard);

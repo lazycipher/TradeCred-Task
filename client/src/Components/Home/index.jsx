@@ -11,18 +11,9 @@ import FileList from '../Files/FileList';
 import GuardedRoute from '../../utils/GuardedRoute';
 import Stats from '../Stats';
 import Invoice from '../Invoices/Invoice';
-import { Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import { clearErrors } from '../../store/actions/errorActions';
 
-const Home = ({isLoading, isAuthenticated, error}) => {
+const Home = ({isLoading, isAuthenticated}) => {
 
-  const handleCloseError = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    clearErrors();
-  }
   return (
     <>
       {!isLoading?
@@ -38,19 +29,6 @@ const Home = ({isLoading, isAuthenticated, error}) => {
         </Router> 
         </>
         :<Spinner />}
-        {error.id!==null?
-              <Snackbar 
-                open={error.id!==null} 
-                autoHideDuration={5000} 
-                anchorOrigin={{ vertical: "top", horizontal: "right" }} 
-                onClose={handleCloseError}
-              >
-                <Alert onClose={handleCloseError} severity="error" variant="filled">
-                  {error.msg && error.msg.msg?error.msg.msg:null}
-                </Alert>
-              </Snackbar>
-            :null
-          }
     </>
   );
 }

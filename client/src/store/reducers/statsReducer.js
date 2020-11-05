@@ -11,23 +11,25 @@ import {
   
   export default function statsReducer(state = initialState, action) {
     switch (action.type) {
-        case FETCH_STATS_SUCCESS:
+        case FETCH_STATS_SUCCESS:{
             return {
                 ...state,
                 stats: action.payload,
                 isLoaded: true
             };
-        case FETCH_STATS_FAILED:
+        }
+        case FETCH_STATS_FAILED:{
+            return {
+                ...state,
+                isLoaded: null
+            };
+        }
+        case FETCH_STATS_LOADING: {
             return {
                 ...state,
                 isLoaded: false
             };
-        case FETCH_STATS_LOADING:
-            return {
-                ...state,
-                stats: {},
-                isLoaded: false
-            };
+        }
         default:
             return state;
         }

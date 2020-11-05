@@ -12,7 +12,8 @@ import {
   IconButton,
   Icon,
   Divider,
-  Button
+  Button,
+  CircularProgress
 } from '@material-ui/core';
 import { 
   createStyles, 
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     paper: {
         padding: '0.5rem',
-        fontFamily: 'roboto'
+        fontFamily: 'roboto',
     },
     invoice: {
         backgroundColor: '#3f51b5'
@@ -42,6 +43,11 @@ const useStyles = makeStyles((theme) =>
     },
     invalid: {
         backgroundColor: 'red'
+    },
+    spinnerContainer: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
     }
   }),
 );
@@ -50,69 +56,71 @@ const useStyles = makeStyles((theme) =>
 
     useEffect(()=> {
         getStats();
-    }, [])
+    }, [getStats])
 
     console.log('stats', stats)
     const classes = useStyles();
     return (
         <>
-            {stats && stats.isLoaded===true?
-                <Container maxWidth="sm">
-                    <Button component={RouterLink} to='/' color="primary" variant="outlined">Dashboard</Button>
-                    <Paper className={classes.paper} elevation={3}>
-                        <List component="nav" aria-label="secondary mailbox folders">
-                            <ListItem>
-                                <ListItemAvatar><Avatar className={classes.invoice}><Icon>dehaze</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.invoiceCount )? stats.stats.invoiceCount:0} secondary="Total Invoices"/>
-                                <IconButton>
-                                    <Icon>open_in_new</Icon>
-                                </IconButton>
-                            </ListItem>
-                        </List>
-                        <Divider />
-                        <List component="nav" aria-label="secondary mailbox folders">
-                            <ListItem>
-                                <ListItemAvatar><Avatar className={classes.vendors}><Icon>topic</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.vendorsCount )? stats.stats.vendorsCount:0} secondary="Total Vendors Registered"/>
-                                <IconButton>
-                                    <Icon>open_in_new</Icon>
-                                </IconButton>
-                            </ListItem>
-                        </List>
-                        <Divider />
-                        <List component="nav" aria-label="secondary mailbox folders">
-                            <ListItem>
-                                <ListItemAvatar><Avatar className={classes.files}><Icon>storage</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.filesCount )? stats.stats.filesCount:0} secondary="Total Files Uploaded"/>
-                                <IconButton>
-                                    <Icon>open_in_new</Icon>
-                                </IconButton>
-                            </ListItem>
-                        </List>
-                        <Divider />
-                        <List component="nav" aria-label="secondary mailbox folders">
-                            <ListItem>
-                                <ListItemAvatar><Avatar className={classes.amount} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.invoiceAmount )? stats.stats.invoiceAmount:0} secondary="Total Amount in local Currency"/>
-                                <IconButton>
-                                    <Icon>open_in_new</Icon>
-                                </IconButton>
-                            </ListItem>
-                        </List>
-                        <Divider />
-                        <List component="nav" aria-label="secondary mailbox folders">
-                            <ListItem>
-                                <ListItemAvatar><Avatar className={classes.invalid} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
-                                <ListItemText primary={(stats.stats && stats.stats.invalidCount )? stats.stats.invalidCount:0} secondary="Total Invalid"/>
-                                <IconButton>
-                                    <Icon>open_in_new</Icon>
-                                </IconButton>
-                            </ListItem>
-                        </List>
-                        <Divider />
-                    </Paper>
-                </Container>
-            :null}
+            <Container maxWidth="sm">
+                <Button component={RouterLink} to='/' color="primary" variant="outlined">Dashboard</Button>
+                <Paper className={classes.paper} elevation={3}>
+                    {stats && stats.isLoaded===true?
+                        <>
+                            <List component="nav" aria-label="secondary mailbox folders">
+                                <ListItem>
+                                    <ListItemAvatar><Avatar className={classes.invoice}><Icon>dehaze</Icon></Avatar></ListItemAvatar>
+                                    <ListItemText primary={(stats.stats && stats.stats.invoiceCount )? stats.stats.invoiceCount:0} secondary="Total Invoices"/>
+                                    <IconButton>
+                                        <Icon>open_in_new</Icon>
+                                    </IconButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                            <List component="nav" aria-label="secondary mailbox folders">
+                                <ListItem>
+                                    <ListItemAvatar><Avatar className={classes.vendors}><Icon>topic</Icon></Avatar></ListItemAvatar>
+                                    <ListItemText primary={(stats.stats && stats.stats.vendorsCount )? stats.stats.vendorsCount:0} secondary="Total Vendors Registered"/>
+                                    <IconButton>
+                                        <Icon>open_in_new</Icon>
+                                    </IconButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                            <List component="nav" aria-label="secondary mailbox folders">
+                                <ListItem>
+                                    <ListItemAvatar><Avatar className={classes.files}><Icon>storage</Icon></Avatar></ListItemAvatar>
+                                    <ListItemText primary={(stats.stats && stats.stats.filesCount )? stats.stats.filesCount:0} secondary="Total Files Uploaded"/>
+                                    <IconButton>
+                                        <Icon>open_in_new</Icon>
+                                    </IconButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                            <List component="nav" aria-label="secondary mailbox folders">
+                                <ListItem>
+                                    <ListItemAvatar><Avatar className={classes.amount} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
+                                    <ListItemText primary={(stats.stats && stats.stats.invoiceAmount )? stats.stats.invoiceAmount:0} secondary="Total Amount in local Currency"/>
+                                    <IconButton>
+                                        <Icon>open_in_new</Icon>
+                                    </IconButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                            <List component="nav" aria-label="secondary mailbox folders">
+                                <ListItem>
+                                    <ListItemAvatar><Avatar className={classes.invalid} ><Icon>attach_money</Icon></Avatar></ListItemAvatar>
+                                    <ListItemText primary={(stats.stats && stats.stats.invalidCount )? stats.stats.invalidCount:0} secondary="Total Invalid"/>
+                                    <IconButton>
+                                        <Icon>open_in_new</Icon>
+                                    </IconButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                        </>
+                    :<div className={classes.spinnerContainer}><CircularProgress /></div>}
+                </Paper>
+            </Container>
         </>
     )
 }
